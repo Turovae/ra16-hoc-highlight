@@ -1,35 +1,107 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
-
+function New(props: { children: JSX.Element }) {
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="wrap-item wrap-item-new">
+      <span className="label">New!</span>
+      {props.children}
+    </div>
+  );
 }
 
-export default App
+function Popular(props: { children: JSX.Element }) {
+  return (
+    <div className="wrap-item wrap-item-popular">
+      <span className="label">Popular!</span>
+      {props.children}
+    </div>
+  );
+}
+
+function Article(props: { title: string; views: number }) {
+  return (
+    <div className="item item-article">
+      <h3>
+        <a href="#">{props.title}</a>
+      </h3>
+      <p className="views">Прочтений: {props.views}</p>
+    </div>
+  );
+}
+
+function Video(props: { type: string; url: string; views: number }) {
+  return (
+    <div className="item item-video">
+      <iframe
+        src={props.url}
+        frameBorder="0"
+        allow="autoplay; encrypted-media"
+        allowFullScreen
+      ></iframe>
+      <p className="views">Просмотров: {props.views}</p>
+    </div>
+  );
+}
+
+function List(props: {
+  list: {
+    id: number;
+    type: string;
+    url?: string;
+    title?: string;
+    views: number;
+  }[];
+}) {
+  return props.list.map((item) => {
+    switch (item.type) {
+      case "video":
+        return <Video {...item} />;
+
+      case "article":
+        return <Article {...item} />;
+    }
+  });
+}
+
+export default function App() {
+  const [list] = useState([
+    {
+      id: 1,
+      type: "video",
+      url: "https://www.youtube.com/embed/rN6nlNC9WQA?rel=0&amp;controls=0&amp;showinfo=0",
+      views: 50,
+    },
+    {
+      id: 2,
+      type: "video",
+      url: "https://www.youtube.com/embed/dVkK36KOcqs?rel=0&amp;controls=0&amp;showinfo=0",
+      views: 12,
+    },
+    {
+      id: 3,
+      type: "article",
+      title: "Невероятные события в неизвестном поселке...",
+      views: 175,
+    },
+    {
+      id: 4,
+      type: "article",
+      title: "Секретные данные были раскрыты!",
+      views: 1532,
+    },
+    {
+      id: 5,
+      type: "video",
+      url: "https://www.youtube.com/embed/TKmGU77INaM?rel=0&amp;controls=0&amp;showinfo=0",
+      views: 4253,
+    },
+    {
+      id: 6,
+      type: "article",
+      title: "Кот Бегемот обладает невероятной...",
+      views: 12,
+    },
+  ]);
+
+  return <List list={list} />;
+}
