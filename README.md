@@ -1,3 +1,7 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/93pe41is0sm64vk3?svg=true)](https://ci.appveyor.com/project/Turovae/ra16-hoc-highlight)
+
+---
+
 Подсвечивание блоков
 ===
 
