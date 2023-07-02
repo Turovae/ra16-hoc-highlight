@@ -1,5 +1,19 @@
 import React, { useState } from "react";
 
+interface VideoProps {
+  id: number;
+  type: "video";
+  url: string;
+  views: number;
+}
+
+interface ArticleProps {
+  id: number;
+  type: "article";
+  title: string;
+  views: number;
+}
+
 function New(props: { children: JSX.Element }) {
   return (
     <div className="wrap-item wrap-item-new">
@@ -43,23 +57,64 @@ function Video(props: { type: string; url: string; views: number }) {
   );
 }
 
+function HighLight<T extends VideoProps | ArticleProps>(
+  Component: React.ComponentType<T>
+) {
+  return class extends React.Component<Record<"views", number>> {
+    render() {
+      const props = { ...(this.props as T) };
+      if (this.props.views >= 1000) {
+        return (
+          <Popular>
+            <Component {...props} />
+          </Popular>
+        );
+      }
+      if (this.props.views < 100) {
+        return (
+          <New>
+            <Component {...props} />
+          </New>
+        );
+      }
+      return <Component {...props} />;
+    }
+  };
+}
+
 function List(props: {
-  list: {
-    id: number;
-    type: string;
-    url?: string;
-    title?: string;
-    views: number;
-  }[];
+  list: (
+    | {
+        id: number;
+        type: string;
+        url: string;
+        views: number;
+        title?: undefined;
+      }
+    | {
+        id: number;
+        type: string;
+        title: string;
+        views: number;
+        url?: undefined;
+      }
+  )[];
 }) {
   return props.list.map((item) => {
+    let Component;
     switch (item.type) {
       case "video":
-        return <Video {...item} />;
-
+        Component = Video;
+        break;
       case "article":
-        return <Article {...item} />;
+        Component = Article;
+        break;
     }
+
+    const Highlighted = HighLight(
+      Component as React.ComponentType<VideoProps | ArticleProps>
+    );
+    return <Highlighted key={item.id} {...item} />;
   });
 }
 
